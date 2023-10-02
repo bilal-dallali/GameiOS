@@ -67,6 +67,45 @@ class Player {
         self.isAlive = isAlive
     }
     
+    func typeString(type: Int) -> String {
+        switch type {
+        case 1:
+            return "Warrior"
+        case 2:
+            return "Magus"
+        case 3:
+            return "Colossus"
+        case 4:
+            return "Dwarf"
+        default:
+            return "Unknown"
+        }
+    }
+
+    func printTeam() {
+        print("Your team is composed of the following characters:")
+        for character in team {
+            let typeName = typeString(type: typeOfCharacter(character: character))
+            print("- \(character.name) who is a \(typeName)")
+        }
+    }
+
+    func typeOfCharacter(character: Character) -> Int {
+        switch character {
+        case is Warrior:
+            return 1
+        case is Magus:
+            return 2
+        case is Colossus:
+            return 3
+        case is Dwarf:
+            return 4
+        default:
+            return 0
+        }
+    }
+
+    
     // Create team
     func createTeam() {
         print("create team of three characters")
@@ -93,8 +132,9 @@ class Player {
             
             if let character: Character = character {
                 team.append(character)
-                print("\(character.name) is a \(type) has been added to your team")
+                print("\(character.name) is a \(typeString(type: type)) has been added to your team")
                 print("Your team is composed of those characters ")
+                printTeam()
             }
         }
     }
