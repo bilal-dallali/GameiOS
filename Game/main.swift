@@ -83,7 +83,6 @@ class Player {
     }
 
     func printTeam() {
-        print("Your team is composed of the following characters:")
         for character in team {
             let typeName = typeString(type: typeOfCharacter(character: character))
             print("- \(character.name) who is a \(typeName)")
@@ -107,10 +106,10 @@ class Player {
 
     
     // Create team
-    func createTeam() {
-        print("create team of three characters")
+    func createTeam(for playerName: String) {
+        print("\(playerName) create team of three characters")
         for _ in 1...3 {
-            print("enter a character name:")
+            print("Enter a character name:")
             let name: String = readLine() ?? ""
             print("Choose the type of the character you just named (1. Warrior, 2. Magus, 3. Colossus, 4. Dwarf):")
             let type: Int = Int(readLine() ?? "") ?? 0
@@ -133,7 +132,7 @@ class Player {
             if let character: Character = character {
                 team.append(character)
                 print("\(character.name) is a \(typeString(type: type)) has been added to your team")
-                print("Your team is composed of those characters ")
+                print("\(playerName) your team is composed of those characters ")
                 printTeam()
             }
         }
@@ -155,8 +154,8 @@ class Game {
     // Start the game
     func start() {
         print("The game starts")
-        player1.createTeam()
-        player2.createTeam()
+        player1.createTeam(for: "Player1")
+        player2.createTeam(for: "Player2")
     }
 }
 
