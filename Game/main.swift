@@ -34,12 +34,18 @@ class Character {
         otherCharacter.lifePoints -= self.weapon.damage
         
         print("\(self.name) attacked \(otherCharacter.name) with \(self.weapon.name) causing \(self.weapon.damage) damage!")
+        
+        if !otherCharacter.isAlive {
+            print("\(otherCharacter.name) has died")
+        } else {
+            print("\(otherCharacter.name) has \(otherCharacter.lifePoints) life points remaining!")
+        }
     }
 }
 
 class Warrior: Character {
     init(name: String) {
-        super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword", damage: 10))
+        super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword", damage: 50))
     }
 }
 
@@ -142,7 +148,14 @@ class Player {
                 printTeam()
             }
         }
+        
+        
     }
+    
+    func removeDeadCharacters() {
+        self.team = self.team.filter { $0.isAlive }
+    }
+
     
     // Checking if my team is still alive
     func teamIsAlive() -> Bool {
@@ -163,8 +176,19 @@ class Game {
     }
     
     // Choose a character from your team
-    func chooseCharacterFromTeam(player: Player) -> Character? {
-        print("Choose a character from your team by its name:")
+    func chooseCharacterFromYourTeam(player: Player) -> Character? {
+        print("To command, choose a character from your team by its name:")
+        player.printTeam()
+        if let choice = readLine(), let chosenCharacter = player.team.first(where: {$0.name == choice}) {
+            return chosenCharacter
+        }
+        print("Invalid choice!")
+        return nil
+    }
+    
+    // Choose a character from opponent's team
+    func chooseCharacterFromOpponentTeam(player: Player) -> Character? {
+        print("To attack, choose a character from the opponent's team by its name:")
         player.printTeam()
         if let choice = readLine(), let chosenCharacter = player.team.first(where: {$0.name == choice}) {
             return chosenCharacter
@@ -185,7 +209,7 @@ class Game {
         while player1.teamIsAlive() && player2.teamIsAlive() {
             print("\(currentPlayer === player1 ? "Player1" : "Player2")'s turn!")
 
-            guard let attackingCharacter = chooseCharacterFromTeam(player: currentPlayer) else { continue }
+            guard let attackingCharacter = chooseCharacterFromYourTeam(player: currentPlayer) else { continue }
 
             if let magus = attackingCharacter as? Magus {
                 print("Do you want to (1) Attack or (2) Heal?")
@@ -193,11 +217,11 @@ class Game {
 
                 switch action {
                 case 1:
-                    if let target = chooseCharacterFromTeam(player: opposingPlayer) {
+                    if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
                         magus.attack(otherCharacter: target)
                     }
                 case 2:
-                    if let target = chooseCharacterFromTeam(player: currentPlayer) {
+                    if let target = chooseCharacterFromYourTeam(player: currentPlayer) {
                         magus.heal(target: target)
                         print("\(magus.name) healed \(target.name) by 20 points!")
                     }
@@ -206,10 +230,14 @@ class Game {
                     continue
                 }
             } else {
-                if let target = chooseCharacterFromTeam(player: opposingPlayer) {
+                if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
                     attackingCharacter.attack(otherCharacter: target)
                 }
             }
+            
+            // Remove dead characters from the teams
+            currentPlayer.removeDeadCharacters()
+            opposingPlayer.removeDeadCharacters()
 
             // Swap players
             (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
