@@ -152,7 +152,7 @@ class Game {
     }
     
     // Start the game
-    func start() {
+    func fight() {
         print("The game starts")
         player1.createTeam(for: "Player1")
         player2.createTeam(for: "Player2")
@@ -163,8 +163,4 @@ class Game {
 let player1: Player = Player(isAlive: true)
 let player2: Player = Player(isAlive: true)
 let game = Game(player1: player1, player2: player2)
-game.start()
-
-//var test: String = readLine() ?? ""
-//
-//print("readline: \(test)")
+game.fight()
