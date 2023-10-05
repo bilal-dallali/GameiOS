@@ -72,11 +72,13 @@ class Dwarf: Character {
 }
 
 class Player {
-    var team: [Character] = []
-    var isAlive: Bool
+    var team = [Character]()
+    let name: String
+    //var isAlive: Bool = true
     
-    init(isAlive: Bool) {
-        self.isAlive = isAlive
+    init(name: String) {
+//        self.isAlive = isAlive
+        self.name = name
     }
     
     func typeString(type: Int) -> String {
@@ -161,6 +163,50 @@ class Player {
     func teamIsAlive() -> Bool {
         return team.contains { $0.isAlive }
     }
+    
+    func selectActionFor(character: Character) -> Int {
+           if let _ = character as? Magus {
+               print("Do you want to (1) Attack or (2) Heal?")
+               return Int(readLine() ?? "") ?? 0
+           }
+           return 1
+       }
+
+       func performAction(for character: Character, against opponent: Player) {
+           switch selectActionFor(character: character) {
+           case 1:
+               if let target = opponent.chooseCharacterForAttack() {
+                   character.attack(otherCharacter: target)
+               }
+           case 2:
+               if let magus = character as? Magus,
+                  let target = chooseCharacterForHeal() {
+                   magus.heal(target: target)
+                   print("\(magus.name) healed \(target.name) by 20 points!")
+               }
+           default:
+               print("Invalid choice!")
+           }
+       }
+       
+       func chooseCharacterForAttack() -> Character? {
+           print("To attack, choose a character from your team by its name:")
+           return chooseCharacter()
+       }
+
+       func chooseCharacterForHeal() -> Character? {
+           print("To heal, choose a character from your team by its name:")
+           return chooseCharacter()
+       }
+
+       private func chooseCharacter() -> Character? {
+           printTeam()
+           if let choice = readLine(), let chosenCharacter = team.first(where: {$0.name == choice}) {
+               return chosenCharacter
+           }
+           print("Invalid choice!")
+           return nil
+       }
 }
 
 class Game {
@@ -205,54 +251,32 @@ class Game {
         
         var currentPlayer = player1
         var opposingPlayer = player2
-
+//        var opposite: Player {
+//            return currentPlayer == player1
+//        }
+        
         while player1.teamIsAlive() && player2.teamIsAlive() {
-            print("\(currentPlayer === player1 ? "Player1" : "Player2")'s turn!")
-
-            guard let attackingCharacter = chooseCharacterFromYourTeam(player: currentPlayer) else { continue }
-
-            if let magus = attackingCharacter as? Magus {
-                print("Do you want to (1) Attack or (2) Heal?")
-                let action = Int(readLine() ?? "") ?? 0
-
-                switch action {
-                case 1:
-                    if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
-                        magus.attack(otherCharacter: target)
-                    }
-                case 2:
-                    if let target = chooseCharacterFromYourTeam(player: currentPlayer) {
-                        magus.heal(target: target)
-                        print("\(magus.name) healed \(target.name) by 20 points!")
-                    }
-                default:
-                    print("Invalid choice!")
-                    continue
-                }
-            } else {
-                if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
-                    attackingCharacter.attack(otherCharacter: target)
-                }
+            print("\(currentPlayer.name)'s turn!")
+            
+            if let activeCharacter = currentPlayer.chooseCharacterForAttack() {
+                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer)
             }
             
-            // Remove dead characters from the teams
-            currentPlayer.removeDeadCharacters()
-            opposingPlayer.removeDeadCharacters()
-
             // Swap players
             (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
+            
         }
-        
         if player1.teamIsAlive() {
-            print("Player1 wins!")
+            print("\(player1.name) wins")
         } else {
-            print("Player2 wins!")
+            print("\(player2.name) wins")
         }
+        //print(player1.teamIsAlive() ? "Player1 wins!" : "Player2 wins!")
     }
 }
 
 
-let player1: Player = Player(isAlive: true)
-let player2: Player = Player(isAlive: true)
+let player1: Player = Player(name: "player1")
+let player2: Player = Player(name: "player2")
 let game = Game(player1: player1, player2: player2)
 game.fight()
