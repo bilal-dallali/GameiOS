@@ -269,10 +269,57 @@ class Game {
             (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
             
         }
-        if player1.teamIsAlive() {
-            print("\(player1.name) wins")
-        } else {
-            print("\(player2.name) wins")
+//        if player1.teamIsAlive() {
+//            print("\(player1.name) wins")
+//        } else {
+//            print("\(player2.name) wins")
+//        }
+        print(player1.teamIsAlive() ? player1.name : player2.name)
+    }
+    
+    func displayGameStatistics() {
+        print("Game statistics")
+        print("Total rounds Played: \(roundsPlayed)")
+        print("\(player1.name)'s Team:")
+        
+        for character in player1.team {
+            print("\(character.name) who is a \(typeString(type: typeOfCharacter(character: character))) with \(character.lifePoints) life points.")
+        }
+        
+        print("\(player2.name)'s Team:")
+        
+        for character in player2.team {
+            print("\(character.name) who is a \(typeString(type: typeOfCharacter(character: character))) with \(character.lifePoints) life points.")
+        }
+    }
+    
+    private func typeString(type: Int) -> String {
+        switch type {
+        case 1:
+            return "Warrior"
+        case 2:
+            return "Magus"
+        case 3:
+            return "Colossus"
+        case 4:
+            return "Dwarf"
+        default:
+            return "Unknown"
+        }
+    }
+
+    private func typeOfCharacter(character: Character) -> Int {
+        switch character {
+        case is Warrior:
+            return 1
+        case is Magus:
+            return 2
+        case is Colossus:
+            return 3
+        case is Dwarf:
+            return 4
+        default:
+            return 0
         }
     }
 
