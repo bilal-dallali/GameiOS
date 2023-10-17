@@ -32,7 +32,7 @@ class Player {
 
     func printTeam() {
         for character in team {
-            let typeName = typeString(type: typeOfCharacter(character: character))
+            let typeName = typeString(type: typeOfCharacter(character: character)) ?? "Unknown"
             print("- \(character.name) who is a \(typeName)")
         }
     }
@@ -55,46 +55,52 @@ class Player {
     
     // Create team
     func createTeam(for playerName: String) {
-        print("\(playerName) create team of three characters")
-        
-        var teamCount = 0
-        
-        while teamCount < 3 {
-            print("Enter a character name:")
-            let name: String = readLine() ?? ""
-            
-            var character: Character? = nil
-            
+        print("\(playerName) create your team of three characters !")
+
+        while team.count < 3 {
+            print("Enter a character name :")
+            guard let name = readLine(), !name.isEmpty else {
+                print("Invalid name ! Please try again !")
+                continue
+            }
+
+            var characterType: String?
+            var character: Character?
             while character == nil {
                 print("Choose the type of the character you just named (1. Warrior, 2. Magus, 3. Colossus, 4. Dwarf):")
-                
-                guard let typeInput = readLine(), let type = Int(typeInput) else {
-                    print("Invalid input ! Please enter a number.")
-                    continue
-                }
-                
-                switch type {
-                case 1:
+                let typeInput = readLine()
+
+                switch typeInput {
+                case "1":
                     character = Warrior(name: name)
-                case 2:
+                    characterType = "Warrior"
+                case "2":
                     character = Magus(name: name)
-                case 3:
+                    characterType = "Magus"
+                case "3":
                     character = Colossus(name: name)
-                case 4:
+                    characterType = "Colossus"
+                case "4":
                     character = Dwarf(name: name)
+                    characterType = "Dwarf"
                 default:
-                    print("Invalid choice ! Please choose a number between 1 and 4 to have the corresponding character in your team")
+                    print("Invalid choice! Please enter a number between 1 and 4.\n")
                     continue
                 }
             }
-            
-            team.append(character!)
-            teamCount += 1
-            print("\(character!.name) is a \(typeString(type: type) ?? "Unknown") has been added to your team")
-            print("\(playerName) your team is composed of those characters :")
-            printTeam()
+
+            if let character = character, let characterType = characterType {
+                team.append(character)
+                print("\(character.name) who is a \(characterType) has been added to your team.")
+                print("Your team is composed of :")
+                printTeam()
+            }
         }
+
+        print("\(playerName), your team is composed of the following characters:")
+        printTeam()
     }
+
     
     func removeDeadCharacters() {
         self.team = self.team.filter { $0.isAlive }
