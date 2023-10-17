@@ -21,31 +21,39 @@ class Game {
     
     // Choose a character from your team
     func chooseCharacterFromYourTeam(player: Player) -> Character? {
-        print("To command, choose a character from your team by its number:")
-        for (index, character) in player.team.enumerated() {
-            print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+        var characterChosen: Character? = nil
+        while characterChosen == nil {
+            print("To command, choose a character from your team by its number:")
+            for (index, character) in player.team.enumerated() {
+                print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+            }
+            
+            if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
+                characterChosen = player.team[choiceInt - 1]
+            } else {
+                print("Invalid choice ! Please try again !")
+            }
         }
-        
-        if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
-            return player.team[choiceInt - 1]
-        }
-        print("Invalid choice!")
-        return nil
+        return characterChosen
     }
 
     
     // Choose a character from opponent's team
     func chooseCharacterFromOpponentTeam(player: Player) -> Character? {
-        print("To attack, choose a character from the opponent's team by its number:")
-        for (index, character) in player.team.enumerated() {
-            print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+        var characterChosen: Character? = nil
+        while characterChosen == nil {
+            print("To attack, choose a character from the opponent's team by its number:")
+            for (index, character) in player.team.enumerated() {
+                print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+            }
+            
+            if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
+                characterChosen = player.team[choiceInt - 1]
+            } else {
+                print("Invalid choice ! Please try again !")
+            }
         }
-        
-        if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
-            return player.team[choiceInt - 1]
-        }
-        print("Invalid choice!")
-        return nil
+        return characterChosen
     }
 
     // Start the game
@@ -70,11 +78,7 @@ class Game {
             (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
             
         }
-//        if player1.teamIsAlive() {
-//            print("\(player1.name) wins")
-//        } else {
-//            print("\(player2.name) wins")
-//        }
+
         print(player1.teamIsAlive() ? player1.name : player2.name)
         displayGameStatistics()
     }
@@ -83,9 +87,10 @@ class Game {
         print("Game statistics")
         print("Total rounds Played: \(roundsPlayed)")
         
+        // fonction à refactoriser
         print("\(player1.name)'s Team:")
         if player1.team.isEmpty {
-            print("There are no characters remaining in this team")
+            print("There are no characters remaining in this team\n")
         }
         for character in player1.team {
             print("\(character.name) who is a \(typeString(type: typeOfCharacter(character: character))) with \(character.lifePoints) life points.")
@@ -101,6 +106,7 @@ class Game {
         }
     }
     
+    // eventuellement -> character
     private func typeString(type: Int) -> String {
         switch type {
         case 1:
@@ -113,6 +119,25 @@ class Game {
             return "Dwarf"
         default:
             return "Unknown"
+        }
+    }
+    
+    enum CharacterType : String, CaseIterable {
+    case Warrior
+    case Magus
+    case Colossus
+    case Dwarf
+        var identifier: Int {
+            switch self {
+            case .Warrior:
+                return 1
+            case .Magus:
+                return 2
+            case .Colossus:
+                return 3
+            case .Dwarf:
+                return 4
+            }
         }
     }
 
