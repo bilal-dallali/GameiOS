@@ -166,25 +166,48 @@ class Player {
         return nil
     }
     
+    
     func performAction(for character: Character, against opponent: Player, in game: Game) {
-        switch selectActionFor(character: character) {
-        case 1:
-            if let target = game.chooseCharacterFromOpponentTeam(player: opponent) {
-                character.attack(otherCharacter: target, from: opponent.team)
-                opponent.removeDeadCharacters() // Remove characters from the opponent's team that have died.
-            }
-        case 2:
-            if let magus = character as? Magus,
-               let target = game.chooseCharacterFromYourTeam(player: self) {
-                if target !== magus {
-                    magus.heal(target: target)
-                    print("\(magus.name) healed \(target.name) by 20 points!")
-                } else {
-                    print("A magus cannot heal himself")
+        var actionSuccess = false
+
+        while !actionSuccess {
+            let actionChoice = selectActionFor(character: character)
+
+            switch actionChoice {
+            case 1:
+                if let target = game.chooseCharacterFromOpponentTeam(player: opponent) {
+                    character.attack(otherCharacter: target, from: opponent.team)
+                    opponent.removeDeadCharacters() // Remove characters from the opponent's team that have died.
+                    actionSuccess = true  // L'attaque a été réussie.
                 }
+            case 2:
+                if let magus = character as? Magus {
+                    var validHeal = false
+                    while !validHeal {
+                        if let target = game.chooseCharacterFromYourTeam(player: self) {
+                            if target !== magus {
+                                magus.heal(target: target)
+                                print("\(magus.name) healed \(target.name) by 20 points!")
+                                validHeal = true  // Le soin a été réussi.
+                                actionSuccess = true  // L'action a été réussie.
+                            } else {
+                                print("Invalid action: A magus cannot heal himself. Please choose another character.")
+                                // Le joueur doit réessayer
+                            }
+                        } else {
+                            print("Invalid choice! Please try again.")
+                            // Le joueur doit réessayer
+                        }
+                    }
+                } else {
+                    print("Your character cannot perform healing!")
+                    actionSuccess = true  // Passe à l'action suivante car ce personnage ne peut pas guérir.
+                }
+            default:
+                print("Invalid choice! Please try again.")
+                // Si le choix est invalide, 'actionSuccess' reste false et la boucle continue pour demander une nouvelle entrée.
             }
-        default:
-            print("Invalid choice!")
         }
     }
+
 }
