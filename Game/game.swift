@@ -30,6 +30,11 @@ class Game {
             
             if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
                 characterChosen = player.team[choiceInt - 1]
+                
+                if let activeCharacter = player.activeCharacter as? Magus, activeCharacter === characterChosen {
+                    print("Invalid choice ! A magus cannot heal himself !")
+                    characterChosen = nil
+                }
             } else {
                 print("Invalid choice ! Please try again !")
             }
@@ -78,8 +83,16 @@ class Game {
             (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
             
         }
+        
+        if player1.teamIsAlive() {
+            print("\(player1.name) wins the game")
+        } else if player2.teamIsAlive() {
+            print("\(player2.name) wins the game")
+        } else {
+            print("Did you just break the game ?")
+        }
 
-        print(player1.teamIsAlive() ? player1.name : player2.name)
+        //print(player1.teamIsAlive() ? "\(player1.name) wins the game" : "\(player2.name) wins the game")
         displayGameStatistics()
     }
     
@@ -155,5 +168,4 @@ class Game {
             return 0
         }
     }
-
 }

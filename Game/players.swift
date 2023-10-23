@@ -29,6 +29,8 @@ class Player {
             return nil
         }
     }
+    
+    var activeCharacter: Character?
 
     func printTeam() {
         for character in team {
@@ -64,7 +66,7 @@ class Player {
                 continue
             }
 
-            var characterType: String?
+            //var characterType: String?
             var character: Character?
             while character == nil {
                 print("Choose the type of the character you just named (1. Warrior, 2. Magus, 3. Colossus, 4. Dwarf):")
@@ -73,24 +75,25 @@ class Player {
                 switch typeInput {
                 case "1":
                     character = Warrior(name: name)
-                    characterType = "Warrior"
+                    //characterType = "Warrior"
                 case "2":
                     character = Magus(name: name)
-                    characterType = "Magus"
+                    //characterType = "Magus"
                 case "3":
                     character = Colossus(name: name)
-                    characterType = "Colossus"
+                    //characterType = "Colossus"
                 case "4":
                     character = Dwarf(name: name)
-                    characterType = "Dwarf"
+                    //characterType = "Dwarf"
                 default:
                     print("Invalid choice! Please enter a number between 1 and 4.\n")
-                    continue
+                    continue //optionel, pas utile en l'état
                 }
             }
 
-            if let character = character, let characterType = characterType {
+            if let character = character {
                 team.append(character)
+                let characterType = String(describing: type(of: character))
                 print("\(character.name) who is a \(characterType) has been added to your team.")
                 print("Your team is composed of :")
                 printTeam()
@@ -126,19 +129,42 @@ class Player {
            return chooseCharacter()
        }
 
-       func chooseCharacterForHeal() -> Character? {
-           print("To heal, choose a character from your team by its name:")
-           return chooseCharacter()
-       }
-
-       private func chooseCharacter() -> Character? {
-           printTeam()
-           if let choice = readLine(), let chosenCharacter = team.first(where: {$0.name == choice}) {
-               return chosenCharacter
-           }
-           print("Invalid choice!")
-           return nil
-       }
+//       func chooseCharacterForHeal() -> Character? {
+//           print("To heal, choose a character from your team by its name:")
+//           return chooseCharacter()
+//       }
+    
+    func chooseCharacterForHeal(player: Player, healer: Magus) -> Character? {
+        var characterChosen: Character? = nil
+        while characterChosen == nil || characterChosen === healer {
+            print("To heal, choose a character from your team by its number (you cannot heal yourself):")
+            for (index, character) in player.team.enumerated() {
+                print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+            }
+            
+            if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
+                characterChosen = player.team[choiceInt - 1]
+            } else {
+                print("Invalid choice! Please try again!")
+            }
+            
+            if characterChosen === healer {
+                print("You cannot heal yourself! Please choose another character.")
+                characterChosen = nil // reset the choice
+            }
+        }
+        return characterChosen
+    }
+    
+    
+    private func chooseCharacter() -> Character? {
+        printTeam()
+        if let choice = readLine(), let chosenCharacter = team.first(where: {$0.name == choice}) {
+            return chosenCharacter
+        }
+        print("Invalid choice!")
+        return nil
+    }
     
     func performAction(for character: Character, against opponent: Player, in game: Game) {
         switch selectActionFor(character: character) {
