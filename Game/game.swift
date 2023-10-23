@@ -30,11 +30,6 @@ class Game {
             
             if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
                 characterChosen = player.team[choiceInt - 1]
-                
-                if let activeCharacter = player.activeCharacter as? Magus, activeCharacter === characterChosen {
-                    print("Invalid choice ! A magus cannot heal himself !")
-                    characterChosen = nil
-                }
             } else {
                 print("Invalid choice ! Please try again !")
             }

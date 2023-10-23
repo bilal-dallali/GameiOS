@@ -51,7 +51,12 @@ class Magus: Character {
     }
     
     func heal(target: Character) {
-        target.lifePoints += 20
+        if target === self {
+            print("A Magus cannot heal himself!")
+        } else {
+            target.lifePoints += 20
+            print("\(self.name) heals \(target.name), \(target.name) gains 20 life points!")
+        }
     }
 }
 

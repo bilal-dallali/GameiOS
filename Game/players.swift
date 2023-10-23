@@ -176,8 +176,12 @@ class Player {
         case 2:
             if let magus = character as? Magus,
                let target = game.chooseCharacterFromYourTeam(player: self) {
-                magus.heal(target: target)
-                print("\(magus.name) healed \(target.name) by 20 points!")
+                if target !== magus {
+                    magus.heal(target: target)
+                    print("\(magus.name) healed \(target.name) by 20 points!")
+                } else {
+                    print("A magus cannot heal himself")
+                }
             }
         default:
             print("Invalid choice!")
