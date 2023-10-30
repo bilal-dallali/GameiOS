@@ -79,15 +79,16 @@ class Game {
             
         }
         
-        if player1.teamIsAlive() {
-            print("\(player1.name) wins the game")
-        } else if player2.teamIsAlive() {
-            print("\(player2.name) wins the game")
-        } else {
-            print("Did you just break the game ?")
-        }
+//        if player1.teamIsAlive() {
+//            print("\(player1.name) wins the game")
+//        } else if player2.teamIsAlive() {
+//            print("\(player2.name) wins the game")
+//        } else {
+//            print("Did you just break the game ?")
+//        }
 
         //print(player1.teamIsAlive() ? "\(player1.name) wins the game" : "\(player2.name) wins the game")
+        print("\(player1.teamIsAlive() ? player1.name : player2.name) wins the game")
         displayGameStatistics()
     }
     
@@ -98,7 +99,7 @@ class Game {
         // fonction à refactoriser
         print("\(player1.name)'s Team:")
         if player1.team.isEmpty {
-            print("There are no characters remaining in this team\n")
+            print("There are no character remaining in this team\n")
         }
         for character in player1.team {
             print("\(character.name) who is a \(typeString(type: typeOfCharacter(character: character))) with \(character.lifePoints) life points.")

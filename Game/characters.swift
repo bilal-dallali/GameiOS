@@ -24,14 +24,14 @@ class Character {
     }
     
     func attack(otherCharacter: Character, from opponentTeam: [Character]) {
-        print("attack")
+        //print("attack")
         
         otherCharacter.lifePoints -= self.weapon.damage
         
         print("\(self.name) attacked \(otherCharacter.name) with \(self.weapon.name) causing \(self.weapon.damage) damage!")
         
         if !otherCharacter.isAlive {
-            print("\(otherCharacter.name) has died")
+            print("\(otherCharacter.name) has died ☠️")
         } else {
             print("\(otherCharacter.name) has \(otherCharacter.lifePoints) life points remaining!")
         }
@@ -41,13 +41,13 @@ class Character {
 
 class Warrior: Character {
     init(name: String) {
-        super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword", damage: 50))
+        super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword ⚔", damage: 50))
     }
 }
 
 class Magus: Character {
     init(name: String) {
-        super.init(name: name, lifePoints: 150, weapon: Weapon(name: "Sceptre", damage: 5))
+        super.init(name: name, lifePoints: 150, weapon: Weapon(name: "Sceptre ", damage: 5))
     }
     
     func heal(target: Character) {
@@ -62,12 +62,12 @@ class Magus: Character {
 
 class Colossus: Character {
     init(name: String) {
-        super.init(name: name, lifePoints: 250, weapon: Weapon(name: "Hammer", damage: 5))
+        super.init(name: name, lifePoints: 250, weapon: Weapon(name: "Hammer 🔨", damage: 5))
     }
 }
 
 class Dwarf: Character {
     init(name: String) {
-        super.init(name: name, lifePoints: 60, weapon: Weapon(name: "Axe", damage: 20))
+        super.init(name: name, lifePoints: 60, weapon: Weapon(name: "Axe 🪓", damage: 20))
     }
 }
