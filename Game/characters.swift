@@ -31,7 +31,7 @@ class Character {
         print("\(self.name) attacked \(otherCharacter.name) with \(self.weapon.name) causing \(self.weapon.damage) damage!")
         
         if !otherCharacter.isAlive {
-            print("\(otherCharacter.name) has died ☠️")
+            print("\(otherCharacter.name) has died ☠️\n")
         } else {
             print("\(otherCharacter.name) has \(otherCharacter.lifePoints) life points remaining!")
         }
@@ -41,7 +41,7 @@ class Character {
 
 class Warrior: Character {
     init(name: String) {
-        super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword ⚔", damage: 50))
+        super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword ⚔️", damage: 50))
     }
 }
 

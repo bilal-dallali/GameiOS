@@ -94,7 +94,7 @@ class Player {
             if let character = character {
                 team.append(character)
                 let characterType = String(describing: type(of: character))
-                print("\(character.name) who is a \(characterType) has been added to your team.")
+                print("\(character.name) who is a \(characterType) has been added to your team.\n")
                 print("Your team is composed of :")
                 printTeam()
             }
@@ -124,10 +124,10 @@ class Player {
        }
 
        
-       func chooseCharacterForAttack() -> Character? {
-           print("To attack, choose a character from your team by its name:")
-           return chooseCharacter()
-       }
+//       func chooseCharacterForAttack() -> Character? {
+//           print("To attack, choose a character from your team by its name:")
+//           return chooseCharacter()
+//       }
 
 //       func chooseCharacterForHeal() -> Character? {
 //           print("To heal, choose a character from your team by its name:")
