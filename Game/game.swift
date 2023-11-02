@@ -10,6 +10,8 @@ import Foundation
 class Game {
     let player1: Player
     let player2: Player
+    var currentPlayer: Player
+    var opposingPlayer: Player
     var roundsPlayed: Int = 0
     var totalDamage: Int = 0
     var totalHealing: Int = 0
@@ -17,6 +19,8 @@ class Game {
     init(player1: Player, player2: Player) {
         self.player1 = player1
         self.player2 = player2
+        self.currentPlayer = player1 // it can be the player2 but we consider the starting one is the player1
+        self.opposingPlayer = player2
     }
     
     // Choose a character from your team
@@ -25,18 +29,27 @@ class Game {
         while characterChosen == nil {
             print("To command, choose a character from your team by its number:")
             for (index, character) in player.team.enumerated() {
-                print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+                // Check if the character is not the one to exclude
+                if character !== excludingCharacter {
+                    print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+                }
             }
             
             if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
-                characterChosen = player.team[choiceInt - 1]
+                let selectedCharacter = player.team[choiceInt - 1]
+                // Ensure the selected character is not the excluded character
+                if selectedCharacter !== excludingCharacter {
+                    characterChosen = selectedCharacter
+                } else {
+                    print("Invalid choice! You cannot select this character. Please try again!")
+                }
             } else {
-                print("Invalid choice ! Please try again !")
+                print("Invalid choice! Please try again!")
             }
         }
         return characterChosen
     }
-
+    
     
     // Choose a character from opponent's team
     func chooseCharacterFromOpponentTeam(player: Player) -> Character? {
@@ -72,7 +85,8 @@ class Game {
             
             if let activeCharacter = chooseCharacterFromYourTeam(player: currentPlayer) {
                 let targetCharacter = (activeCharacter is Magus) ? chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter) : nil
-                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self, target: targetCharacter)
+//                let characterToHeal = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter as? Magus)
+                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
             }
             
             // Swap players

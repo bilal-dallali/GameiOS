@@ -116,46 +116,82 @@ class Player {
     }
     
     func selectActionFor(character: Character) -> Int {
-           if let _ = character as? Magus {
-               print("Do you want to (1) Attack or (2) Heal?")
-               return Int(readLine() ?? "") ?? 0
-           }
-           return 1
-       }
-
-       
-//       func chooseCharacterForAttack() -> Character? {
-//           print("To attack, choose a character from your team by its name:")
-//           return chooseCharacter()
-//       }
-
-//       func chooseCharacterForHeal() -> Character? {
-//           print("To heal, choose a character from your team by its name:")
-//           return chooseCharacter()
-//       }
+        if let _ = character as? Magus {
+            print("Do you want to (1) Attack or (2) Heal?")
+            return Int(readLine() ?? "") ?? 0
+        }
+        return 1
+    }
     
     func chooseCharacterForHeal(player: Player, healer: Magus) -> Character? {
         var characterChosen: Character? = nil
-        while characterChosen == nil || characterChosen === healer {
+        while characterChosen == nil {
             print("To heal, choose a character from your team by its number (you cannot heal yourself):")
-            for (index, character) in player.team.enumerated() {
+            // Filter out the healer from the list of characters
+            let healableCharacters = player.team.filter { $0 !== healer && $0.isAlive }
+            for (index, character) in healableCharacters.enumerated() {
                 print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
             }
             
-            if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
-                characterChosen = player.team[choiceInt - 1]
+            if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= healableCharacters.count {
+                characterChosen = healableCharacters[choiceInt - 1]
             } else {
                 print("Invalid choice! Please try again!")
-            }
-            
-            if characterChosen === healer {
-                print("You cannot heal yourself! Please choose another character.")
-                characterChosen = nil // reset the choice
             }
         }
         return characterChosen
     }
     
+    func performAction(for character: Character, against opponent: Player, in game: Game) {
+        var actionSuccess = false
+
+        while !actionSuccess {
+            // Check if the character is a Magus and prompt for action choice.
+            if let magus = character as? Magus {
+                print("Do you want to (1) Attack or (2) Heal?")
+                if let choice = readLine() {
+                    switch choice {
+                    case "1":
+                        // Attack logic
+                        if let target = game.chooseCharacterFromOpponentTeam(player: opponent) {
+                            magus.attack(otherCharacter: target, from: opponent.team)
+                            opponent.removeDeadCharacters()
+                            actionSuccess = true
+                        }
+                    case "2":
+                        // Healing logic
+                        // Present a list of characters from the player's team, excluding the Magus
+                        let healableCharacters = team.filter { $0 !== magus && $0.isAlive }
+                        if healableCharacters.isEmpty {
+                            print("There are no characters to heal.")
+                            continue
+                        }
+                        print("To command, choose a character from your team by its number:")
+                        for (index, character) in healableCharacters.enumerated() {
+                            print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
+                        }
+                        if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= healableCharacters.count {
+                            let characterToHeal = healableCharacters[choiceInt - 1]
+                            magus.heal(target: characterToHeal)
+                            print("\(magus.name) healed \(characterToHeal.name) by \(magus.weapon.damage) points!")
+                            actionSuccess = true
+                        } else {
+                            print("Invalid choice! Please try again.")
+                        }
+                    default:
+                        print("Invalid choice! Please try again.")
+                    }
+                }
+            } else {
+                // If the character is not a Magus, proceed with the attack logic.
+                if let target = game.chooseCharacterFromOpponentTeam(player: opponent) {
+                    character.attack(otherCharacter: target, from: opponent.team)
+                    opponent.removeDeadCharacters()
+                    actionSuccess = true
+                }
+            }
+        }
+    }
     
     private func chooseCharacter() -> Character? {
         printTeam()
@@ -164,32 +200,6 @@ class Player {
         }
         print("Invalid choice!")
         return nil
-    }
-    
-    
-    func performAction(for character: Character, against opponent: Player, in game: Game, target: Character? = nil) {
-        var actionSuccess = false
-
-        while !actionSuccess {
-            let actionChoice = selectActionFor(character: character)
-
-            switch actionChoice {
-            case 1:
-                if let target = game.chooseCharacterFromOpponentTeam(player: opponent) {
-                    character.attack(otherCharacter: target, from: opponent.team)
-                    opponent.removeDeadCharacters() // Remove characters from the opponent's team that have died.
-                    actionSuccess = true  // L'attaque a été réussie.
-                }
-            case 2:
-                if let magus = character as? Magus, let target = target {
-                    magus.heal(target: target)
-                    print("\(magus.name) healed \(target.name) by 20 points!")
-                }
-            default:
-                print("Invalid choice! Please try again.")
-                // Si le choix est invalide, 'actionSuccess' reste false et la boucle continue pour demander une nouvelle entrée.
-            }
-        }
     }
 
 }
