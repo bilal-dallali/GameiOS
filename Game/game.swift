@@ -41,10 +41,10 @@ class Game {
                 if selectedCharacter !== excludingCharacter {
                     characterChosen = selectedCharacter
                 } else {
-                    print("Invalid choice! You cannot select this character. Please try again!")
+                    print("⚠️ Invalid choice! You cannot select this character. Please try again!")
                 }
             } else {
-                print("Invalid choice! Please try again!")
+                print("⚠️ Invalid choice! Please try again!")
             }
         }
         return characterChosen
@@ -63,7 +63,7 @@ class Game {
             if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= player.team.count {
                 characterChosen = player.team[choiceInt - 1]
             } else {
-                print("Invalid choice ! Please try again !")
+                print("⚠️ Invalid choice ! Please try again !")
             }
         }
         return characterChosen
@@ -84,32 +84,47 @@ class Game {
             print("\(currentPlayer.name)'s turn!")
             
             if let activeCharacter = chooseCharacterFromYourTeam(player: currentPlayer) {
-                // Check if the active character is a Magus
-                if let magus = activeCharacter as? Magus {
-                    // Ask the player if they want to attack or heal
-                    print("Do you want to (1) Attack or (2) Heal?")
-                    if let choice = readLine(), let choiceInt = Int(choice) {
-                        switch choiceInt {
-                        case 1:
-                            // Proceed with attack
-                            if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
-                                magus.attack(otherCharacter: target, from: opposingPlayer.team)
-                                opposingPlayer.removeDeadCharacters()
+                var validAction = false
+                while !validAction {
+                    // Check if the active character is a Magus and there are other characters to heal
+                    if let magus = activeCharacter as? Magus, currentPlayer.team.count > 1 {
+                        // Ask the player if they want to attack or heal
+                        print("Do you want to (1) Attack or (2) Heal?")
+                        if let choice = readLine(), let choiceInt = Int(choice) {
+                            switch choiceInt {
+                            case 1:
+                                // Proceed with attack
+                                if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+                                    magus.attack(otherCharacter: target, from: opposingPlayer.team)
+                                    opposingPlayer.removeDeadCharacters()
+                                    validAction = true
+                                }
+                            case 2:
+                                // Proceed with heal, excluding the Magus from the list
+                                if let target = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: magus) {
+                                    magus.heal(target: target)
+                                    //print("\(magus.name) healed \(target.name) by \(magus.weapon.damage) points!")
+                                    validAction = true
+                                }
+                            default:
+                                print("⚠️ Invalid choice! Please try again!")
                             }
-                        case 2:
-                            // Proceed with heal, excluding the Magus from the list
-                            if let target = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: magus) {
-                                magus.heal(target: target)
-                            }
-                        default:
-                            print("Invalid choice! Please try again!")
                         }
-                    }
-                } else {
-                    // If the character is not a Magus, proceed with attack
-                    if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
-                        activeCharacter.attack(otherCharacter: target, from: opposingPlayer.team)
-                        opposingPlayer.removeDeadCharacters()
+                    } else if let magus = activeCharacter as? Magus, currentPlayer.team.count == 1 {
+                        // If the Magus is the last character, they can only attack
+                        print("You are the last character in your team and cannot heal. You can only attack.")
+                        if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+                            magus.attack(otherCharacter: target, from: opposingPlayer.team)
+                            opposingPlayer.removeDeadCharacters()
+                            validAction = true
+                        }
+                    } else {
+                        // If the character is not a Magus, proceed with attack
+                        if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+                            activeCharacter.attack(otherCharacter: target, from: opposingPlayer.team)
+                            opposingPlayer.removeDeadCharacters()
+                            validAction = true
+                        }
                     }
                 }
             }

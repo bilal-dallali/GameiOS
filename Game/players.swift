@@ -62,7 +62,7 @@ class Player {
         while team.count < 3 {
             print("Enter a character name :")
             guard let name = readLine(), !name.isEmpty else {
-                print("Invalid name ! Please try again !")
+                print("⚠️ Invalid name ! Please try again !")
                 continue
             }
 
@@ -75,18 +75,14 @@ class Player {
                 switch typeInput {
                 case "1":
                     character = Warrior(name: name)
-                    //characterType = "Warrior"
                 case "2":
                     character = Magus(name: name)
-                    //characterType = "Magus"
                 case "3":
                     character = Colossus(name: name)
-                    //characterType = "Colossus"
                 case "4":
                     character = Dwarf(name: name)
-                    //characterType = "Dwarf"
                 default:
-                    print("Invalid choice! Please enter a number between 1 and 4.\n")
+                    print("⚠️ Invalid choice! Please enter a number between 1 and 4.\n")
                     continue //optionel, pas utile en l'état
                 }
             }
@@ -136,7 +132,7 @@ class Player {
             if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= healableCharacters.count {
                 characterChosen = healableCharacters[choiceInt - 1]
             } else {
-                print("Invalid choice! Please try again!")
+                print("⚠️ Invalid choice! Please try again!")
             }
         }
         return characterChosen
@@ -159,7 +155,7 @@ class Player {
                             actionSuccess = true
                         }
                     case "2":
-                        // Healing logic
+                        // Healing
                         // Present a list of characters from the player's team, excluding the Magus
                         let healableCharacters = team.filter { $0 !== magus && $0.isAlive }
                         if healableCharacters.isEmpty {
@@ -173,13 +169,13 @@ class Player {
                         if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= healableCharacters.count {
                             let characterToHeal = healableCharacters[choiceInt - 1]
                             magus.heal(target: characterToHeal)
-                            print("\(magus.name) healed \(characterToHeal.name) by \(magus.weapon.damage) points!")
+                            //print("\(magus.name) healed \(characterToHeal.name) by \(magus.weapon.damage) points!")
                             actionSuccess = true
                         } else {
-                            print("Invalid choice! Please try again.")
+                            print("⚠️ Invalid choice! Please try again.")
                         }
                     default:
-                        print("Invalid choice! Please try again.")
+                        print("⚠️ Invalid choice! Please try again.")
                     }
                 }
             } else {
@@ -198,7 +194,7 @@ class Player {
         if let choice = readLine(), let chosenCharacter = team.first(where: {$0.name == choice}) {
             return chosenCharacter
         }
-        print("Invalid choice!")
+        print("⚠️ Invalid choice!")
         return nil
     }
 

@@ -24,7 +24,6 @@ class Character {
     }
     
     func attack(otherCharacter: Character, from opponentTeam: [Character]) {
-        //print("attack")
         
         otherCharacter.lifePoints -= self.weapon.damage
         
@@ -55,7 +54,7 @@ class Magus: Character {
             print("A Magus cannot heal himself!")
         } else {
             target.lifePoints += 20
-            print("\(self.name) heals \(target.name), \(target.name) gains 20 life points!")
+            print("\(self.name) heals \(target.name), \(target.name) is healed by 20 life points! ❤️‍🩹")
         }
     }
 }
