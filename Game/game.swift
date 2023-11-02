@@ -20,7 +20,7 @@ class Game {
     }
     
     // Choose a character from your team
-    func chooseCharacterFromYourTeam(player: Player) -> Character? {
+    func chooseCharacterFromYourTeam(player: Player, excludingCharacter: Character? = nil) -> Character? {
         var characterChosen: Character? = nil
         while characterChosen == nil {
             print("To command, choose a character from your team by its number:")
@@ -71,7 +71,8 @@ class Game {
             print("\(currentPlayer.name)'s turn!")
             
             if let activeCharacter = chooseCharacterFromYourTeam(player: currentPlayer) {
-                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
+                let targetCharacter = (activeCharacter is Magus) ? chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter) : nil
+                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self, target: targetCharacter)
             }
             
             // Swap players

@@ -167,7 +167,7 @@ class Player {
     }
     
     
-    func performAction(for character: Character, against opponent: Player, in game: Game) {
+    func performAction(for character: Character, against opponent: Player, in game: Game, target: Character? = nil) {
         var actionSuccess = false
 
         while !actionSuccess {
@@ -181,27 +181,9 @@ class Player {
                     actionSuccess = true  // L'attaque a été réussie.
                 }
             case 2:
-                if let magus = character as? Magus {
-                    var validHeal = false
-                    while !validHeal {
-                        if let target = game.chooseCharacterFromYourTeam(player: self) {
-                            if target !== magus {
-                                magus.heal(target: target)
-                                print("\(magus.name) healed \(target.name) by 20 points!")
-                                validHeal = true  // Le soin a été réussi.
-                                actionSuccess = true  // L'action a été réussie.
-                            } else {
-                                print("Invalid action: A magus cannot heal himself. Please choose another character.")
-                                // Le joueur doit réessayer
-                            }
-                        } else {
-                            print("Invalid choice! Please try again.")
-                            // Le joueur doit réessayer
-                        }
-                    }
-                } else {
-                    print("Your character cannot perform healing!")
-                    actionSuccess = true  // Passe à l'action suivante car ce personnage ne peut pas guérir.
+                if let magus = character as? Magus, let target = target {
+                    magus.heal(target: target)
+                    print("\(magus.name) healed \(target.name) by 20 points!")
                 }
             default:
                 print("Invalid choice! Please try again.")
