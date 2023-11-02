@@ -70,6 +70,87 @@ class Game {
     }
 
     // Start the game
+//    func fight() {
+//        print("The game starts")
+//        player1.createTeam(for: "Player1")
+//        player2.createTeam(for: "Player2")
+//        
+//        var currentPlayer = player1
+//        var opposingPlayer = player2
+//        
+//        while player1.teamIsAlive() && player2.teamIsAlive() {
+//            roundsPlayed += 1
+//            print("Round \(roundsPlayed):")
+//            print("\(currentPlayer.name)'s turn!")
+//            
+//            if let activeCharacter = chooseCharacterFromYourTeam(player: currentPlayer) {
+//                let targetCharacter = (activeCharacter is Magus) ? chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter) : nil
+////                let characterToHeal = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter as? Magus)
+//                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
+//            }
+//            
+//            // Swap players
+//            (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
+//            
+//        }
+//        
+//        print("\(player1.teamIsAlive() ? player1.name : player2.name) wins the game\n")
+//        displayGameStatistics()
+//    }
+    
+    
+//    func fight() {
+//        print("The game starts")
+//        player1.createTeam(for: "Player1")
+//        player2.createTeam(for: "Player2")
+//        
+//        var currentPlayer = player1
+//        var opposingPlayer = player2
+//        
+//        while player1.teamIsAlive() && player2.teamIsAlive() {
+//            roundsPlayed += 1
+//            print("Round \(roundsPlayed):")
+//            print("\(currentPlayer.name)'s turn!")
+//            
+//            if let activeCharacter = chooseCharacterFromYourTeam(player: currentPlayer) {
+//                // Check if the active character is a Magus
+//                if let magus = activeCharacter as? Magus {
+//                    // Ask the player if they want to attack or heal
+//                    print("Do you want to (1) Attack or (2) Heal?")
+//                    if let choice = readLine(), let choiceInt = Int(choice) {
+//                        switch choiceInt {
+//                        case 1:
+//                            // Proceed with attack
+//                            if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+//                                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
+//                            }
+//                        case 2:
+//                            // Proceed with heal, excluding the Magus from the list
+//                            if let target = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: magus) {
+//                                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
+//                            }
+//                        default:
+//                            print("Invalid choice! Please try again!")
+//                        }
+//                    }
+//                } else {
+//                    // If the character is not a Magus, proceed with attack
+//                    if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+//                        currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
+//                    }
+//                }
+//            }
+//            
+//            // Swap players
+//            (currentPlayer, opposingPlayer) = (opposingPlayer, currentPlayer)
+//            
+//        }
+//        
+//        print("\(player1.teamIsAlive() ? player1.name : player2.name) wins the game\n")
+//        displayGameStatistics()
+//    }
+    
+    // Start the game
     func fight() {
         print("The game starts")
         player1.createTeam(for: "Player1")
@@ -84,9 +165,35 @@ class Game {
             print("\(currentPlayer.name)'s turn!")
             
             if let activeCharacter = chooseCharacterFromYourTeam(player: currentPlayer) {
-                let targetCharacter = (activeCharacter is Magus) ? chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter) : nil
-//                let characterToHeal = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: activeCharacter as? Magus)
-                currentPlayer.performAction(for: activeCharacter, against: opposingPlayer, in: self)
+                // Check if the active character is a Magus
+                if let magus = activeCharacter as? Magus {
+                    // Ask the player if they want to attack or heal
+                    print("Do you want to (1) Attack or (2) Heal?")
+                    if let choice = readLine(), let choiceInt = Int(choice) {
+                        switch choiceInt {
+                        case 1:
+                            // Proceed with attack
+                            if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+                                magus.attack(otherCharacter: target, from: opposingPlayer.team)
+                                opposingPlayer.removeDeadCharacters()
+                            }
+                        case 2:
+                            // Proceed with heal, excluding the Magus from the list
+                            if let target = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: magus) {
+                                magus.heal(target: target)
+//                                print("\(magus.name) healed \(target.name) by \(magus.weapon.damage) points!")
+                            }
+                        default:
+                            print("Invalid choice! Please try again!")
+                        }
+                    }
+                } else {
+                    // If the character is not a Magus, proceed with attack
+                    if let target = chooseCharacterFromOpponentTeam(player: opposingPlayer) {
+                        activeCharacter.attack(otherCharacter: target, from: opposingPlayer.team)
+                        opposingPlayer.removeDeadCharacters()
+                    }
+                }
             }
             
             // Swap players
@@ -97,6 +204,8 @@ class Game {
         print("\(player1.teamIsAlive() ? player1.name : player2.name) wins the game\n")
         displayGameStatistics()
     }
+
+
     
     func displayGameStatistics() {
         print("Game statistics:")

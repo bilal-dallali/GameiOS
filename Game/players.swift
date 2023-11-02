@@ -166,7 +166,7 @@ class Player {
                             print("There are no characters to heal.")
                             continue
                         }
-                        print("To command, choose a character from your team by its number:")
+                        print("To heal, choose a character from your team by its number:")
                         for (index, character) in healableCharacters.enumerated() {
                             print("\(index + 1). \(character.name) (\(character.lifePoints) life points)")
                         }
