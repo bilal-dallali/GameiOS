@@ -103,7 +103,6 @@ class Game {
                                 // Proceed with heal, excluding the Magus from the list
                                 if let target = chooseCharacterFromYourTeam(player: currentPlayer, excludingCharacter: magus) {
                                     magus.heal(target: target)
-                                    //print("\(magus.name) healed \(target.name) by \(magus.weapon.damage) points!")
                                     validAction = true
                                 }
                             default:
@@ -147,7 +146,7 @@ class Game {
         // fonction à refactoriser
         print("\(player1.name)'s Team:")
         if player1.team.isEmpty {
-            print("- There are no character remaining in this team\n")
+            print("- There is no character remaining in this team\n")
         }
         for character in player1.team {
             print("\(character.name) who is a \(typeString(type: typeOfCharacter(character: character))) with \(character.lifePoints) life points.")
@@ -155,7 +154,7 @@ class Game {
         
         print("\(player2.name)'s Team:")
         if player2.team.isEmpty {
-            print("- There are no characters remaining in this team\n")
+            print("- There is no characters remaining in this team\n")
         }
         
         for character in player2.team {

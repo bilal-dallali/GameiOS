@@ -155,11 +155,11 @@ class Player {
                             actionSuccess = true
                         }
                     case "2":
-                        // Healing
+
                         // Present a list of characters from the player's team, excluding the Magus
                         let healableCharacters = team.filter { $0 !== magus && $0.isAlive }
                         if healableCharacters.isEmpty {
-                            print("There are no characters to heal.")
+                            print("There is no characters to heal.")
                             continue
                         }
                         print("To heal, choose a character from your team by its number:")
@@ -169,7 +169,6 @@ class Player {
                         if let choice = readLine(), let choiceInt = Int(choice), choiceInt > 0 && choiceInt <= healableCharacters.count {
                             let characterToHeal = healableCharacters[choiceInt - 1]
                             magus.heal(target: characterToHeal)
-                            //print("\(magus.name) healed \(characterToHeal.name) by \(magus.weapon.damage) points!")
                             actionSuccess = true
                         } else {
                             print("⚠️ Invalid choice! Please try again.")

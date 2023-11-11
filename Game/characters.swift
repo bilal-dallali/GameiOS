@@ -41,6 +41,7 @@ class Character {
 class Warrior: Character {
     init(name: String) {
         super.init(name: name, lifePoints: 100, weapon: Weapon(name: "Sword ⚔️", damage: 50))
+        // Damage = 10 but we can put 50 for the tests so the game doesn't last forever
     }
 }
 
