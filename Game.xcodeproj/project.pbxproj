@@ -65,9 +65,9 @@
 		9C5EAFAF2AC72EB600F3F106 /* Game */ = {
 			isa = PBXGroup;
 			children = (
-				9C5EAFB02AC72EB600F3F106 /* main.swift */,
 				9C5EAFB72AC72EEA00F3F106 /* characters.swift */,
 				9C099BF92AC9B089006E638C /* game.swift */,
+				9C5EAFB02AC72EB600F3F106 /* main.swift */,
 				9C099BFB2AC9B134006E638C /* players.swift */,
 				9C3034DF2AD5560E00251FDC /* weapons.swift */,
 			);

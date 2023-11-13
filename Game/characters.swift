@@ -12,7 +12,7 @@ class Character {
     var lifePoints: Int
     let weapon: Weapon
     
-    // Vérifier si le personnage est en vie
+    // Check if the character is alive
     var isAlive: Bool {
         return lifePoints > 0
     }

@@ -11,6 +11,8 @@ class Player {
     var team = [Character]()
     let name: String
     
+    static var usedNames = Set<String>()
+    
     init(name: String) {
         self.name = name
     }
@@ -65,6 +67,12 @@ class Player {
                 print("⚠️ Invalid name ! Please try again !")
                 continue
             }
+            
+            // Check if the is already used
+            if Player.usedNames.contains(name) {
+                print("⚠️ This name is already taken. Please choose a different name.")
+                continue
+            }
 
             //var characterType: String?
             var character: Character?
@@ -85,6 +93,8 @@ class Player {
                     print("⚠️ Invalid choice! Please enter a number between 1 and 4.\n")
                     continue //optionel, pas utile en l'état
                 }
+                
+                Player.usedNames.insert(name)
             }
 
             if let character = character {
@@ -155,7 +165,6 @@ class Player {
                             actionSuccess = true
                         }
                     case "2":
-
                         // Present a list of characters from the player's team, excluding the Magus
                         let healableCharacters = team.filter { $0 !== magus && $0.isAlive }
                         if healableCharacters.isEmpty {

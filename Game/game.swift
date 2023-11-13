@@ -162,7 +162,7 @@ class Game {
         }
     }
     
-    // eventuellement -> character
+    // could be -> character
     private func typeString(type: Int) -> String {
         switch type {
         case 1:
